@@ -1,5 +1,5 @@
 class FlightSearch:
 
-    def __init__(self, city_name: str):
-        self.city_name = city_name
-        self.iatacode = "TESTING"
+    def get_destination_code(self, city_name):
+        code = "TESTING"
+        return code
