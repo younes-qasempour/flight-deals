@@ -1,5 +1,3 @@
-from pprint import pprint
-from flight_search import FlightSearch
 import requests
 from dotenv import dotenv_values
 secrets = dotenv_values(".env")
