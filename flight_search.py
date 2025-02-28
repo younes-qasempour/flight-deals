@@ -70,7 +70,6 @@ class FlightSearch:
         to a KeyError), it logs a message indicating that no airport code was found for the city
         and returns "Not Found".
         """
-        print(f"Using this token to get destination {self._token}")
         headers = {"Authorization": f"Bearer {self._token}"}
 
         query_params = {
@@ -83,7 +82,6 @@ class FlightSearch:
             params=query_params
         )
 
-        print(f"Status code {response.status_code}. Airport IATA: {response.text}")
         try:
             code = response.json()["data"][0]['iataCode']
         except IndexError:
@@ -113,7 +111,6 @@ class FlightSearch:
         provides a link to the API documentation for status code details.
         """
 
-        # print(f"Using this token to check_flights() {self._token}")
         headers = {"Authorization": f"Bearer {self._token}"}
         query = {
             "originLocationCode": origin_city_code,
@@ -134,13 +131,7 @@ class FlightSearch:
 
         if response.status_code != 200:
             print(f"check_flights() response code: {response.status_code}")
-            print("There was a problem with the flight search.\n"
-                  "For details on status codes, check the API documentation:\n"
-                  "https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-search/api"
-                  "-reference")
-            print("Response body:", response.text)
             return None
-
         return response.json()
 
 

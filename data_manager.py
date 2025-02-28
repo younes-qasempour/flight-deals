@@ -2,6 +2,8 @@ import requests
 from dotenv import dotenv_values
 secrets = dotenv_values(".env")
 
+SHEETY_ENDPOINT = "https://api.sheety.co/63411532a24414187c33e64c2bd17b2c/flightDeals/sheet1"
+
 class DataManager:
 
     def __init__(self):
@@ -9,21 +11,21 @@ class DataManager:
         self.destination_data = {}
 
     def get_destination_data(self):
-        response = requests.get(url=secrets['SHEETY_ENDPOINT'], headers=self.sheety_headers)
+        response = requests.get(url=SHEETY_ENDPOINT, headers=self.sheety_headers)
+        response.raise_for_status()
         data = response.json()
-        self.destination_data = data["prices"]
+        self.destination_data = data["sheet1"]
         return self.destination_data
 
     def update_destination_codes(self):
         for city in self.destination_data:
             new_data = {
-                "price": {
+                "sheet1": {
                     "iataCode": city["iataCode"]
                 }
             }
-            response = requests.put(
-                url=f"{secrets['SHEETY_ENDPOINT']}/{city['id']}",
+            requests.put(
+                url=f"{SHEETY_ENDPOINT}/{city['id']}",
                 json=new_data,
                 headers=self.sheety_headers
             )
-            print(response.text)
