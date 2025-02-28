@@ -2,7 +2,7 @@ import requests
 from dotenv import dotenv_values
 secrets = dotenv_values(".env")
 
-SHEETY_ENDPOINT = "https://api.sheety.co/63411532a24414187c33e64c2bd17b2c/flightDeals/sheet1"
+SHEETY_ENDPOINT = "https://api.sheety.co/84f207f4e918992a5c3e9f2a0c374657/flightDeals/sheet1"
 
 class DataManager:
 

@@ -1,14 +1,22 @@
-import time
+# import time
+# from data_manager import DataManager
 from datetime import datetime, timedelta
-from data_manager import DataManager
 from flight_search import FlightSearch
 from flight_data import find_cheapest_flight
 from notification_manager import NotificationManager
-
+import json
 # ==================== Set up the Flight Search ====================
 
-data_manager = DataManager()
-sheet_data = data_manager.get_destination_data()
+# data_manager = DataManager()
+# sheet_data = data_manager.get_destination_data()
+
+# with open('data.json', 'w') as file:
+#     json.dump(sheet_data, file)
+
+with open('data.json', 'r') as file:
+    sheet_data = json.load(file)
+
+
 flight_search = FlightSearch()
 notification_manager = NotificationManager()
 
@@ -16,14 +24,14 @@ notification_manager = NotificationManager()
 ORIGIN_CITY_IATA = "LON"
 
 # ==================== Update the Airport Codes in Google Sheet ====================
-for row in sheet_data:
-    if row["iataCode"] == "":
-        row["iataCode"] = flight_search.get_destination_code(row["city"])
-        # slowing down requests to avoid rate limit
-        time.sleep(2)
-
-data_manager.destination_data = sheet_data
-data_manager.update_destination_codes()
+# for row in sheet_data:
+#     if row["iataCode"] == "":
+#         row["iataCode"] = flight_search.get_destination_code(row["city"])
+#         # slowing down requests to avoid rate limit
+#         time.sleep(2)
+#
+# data_manager.destination_data = sheet_data
+# data_manager.update_destination_codes()
 
 # ==================== Search for Flights and Send Notifications ====================
 tomorrow = datetime.now() + timedelta(days=1)
