@@ -1,3 +1,4 @@
+import smtplib
 from twilio.rest import Client
 from dotenv import dotenv_values
 secrets = dotenv_values(".env")
@@ -6,7 +7,16 @@ secrets = dotenv_values(".env")
 class NotificationManager:
 
     def __init__(self):
+
+        self.smtp_address = secrets["EMAIL_PROVIDER_SMTP_ADDRESS"]
+        self.email = secrets["MY_EMAIL"]
+        self.email_password = secrets["MY_EMAIL_PASSWORD"]
+        self.twilio_virtual_number = secrets["TWILIO_VIRTUAL_NUMBER"]
+        self.twilio_verified_number = secrets["TWILIO_VERIFIED_NUMBER"]
+        self.whatsapp_number = secrets["TWILIO_WHATSAPP_NUMBER"]
+        # Set up Twilio Client and SMTP connection
         self.client = Client(secrets['TWILIO_SID'], secrets["TWILIO_AUTH_TOKEN"])
+        self.connection = smtplib.SMTP(self.smtp_address, port=587)
 
     def send_sms(self, message_body):
         """
@@ -28,9 +38,9 @@ class NotificationManager:
         initialized.
         """
         message = self.client.messages.create(
-            from_=secrets["TWILIO_VIRTUAL_NUMBER"],
+            from_=self.twilio_virtual_number,
             body=message_body,
-            to=secrets["TWILIO_VERIFIED_NUMBER"]
+            to=self.twilio_verified_number
         )
         # Prints if successfully sent.
         print(message.sid)
@@ -39,8 +49,19 @@ class NotificationManager:
     # https://console.twilio.com/us1/develop/sms/try-it-out/whatsapp-learn
     def send_whatsapp(self, message_body):
         message = self.client.messages.create(
-            from_=f'whatsapp:{secrets["TWILIO_WHATSAPP_NUMBER"]}',
+            from_=f'whatsapp:{self.whatsapp_number}',
             body=message_body,
-            to=f'whatsapp:{secrets["TWILIO_VERIFIED_NUMBER"]}'
+            to=f'whatsapp:{self.twilio_verified_number}'
         )
         print(message.sid)
+
+    def send_emails(self, email_list, email_body):
+        with self.connection:
+            self.connection.starttls()
+            self.connection.login(self.email, self.email_password)
+            for email in email_list:
+                self.connection.sendmail(
+                    from_addr=self.email,
+                    to_addrs=email,
+                    msg=f"Subject:New Low Price Flight!\n\n{email_body}".encode('utf-8')
+                )

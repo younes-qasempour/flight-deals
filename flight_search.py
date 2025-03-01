@@ -1,5 +1,4 @@
 from dotenv import dotenv_values
-from datetime import datetime
 import requests
 secrets = dotenv_values(".env")
 
@@ -93,7 +92,7 @@ class FlightSearch:
 
         return code
 
-    def check_flights(self, origin_city_code, destination_city_code, from_time, to_time):
+    def check_flights(self, origin_city_code, destination_city_code, from_time, to_time, is_direct=True):
         """
         Searches for flight options between two cities on specified departure and return dates
         using the Amadeus API.
@@ -109,6 +108,11 @@ class FlightSearch:
         the API. It handles the response, checking the status code and parsing the JSON data if the
         request is successful. If the response status code is not 200, it logs an error message and
         provides a link to the API documentation for status code details.
+        :param to_time:
+        :param from_time:
+        :param destination_city_code:
+        :param origin_city_code:
+        :param is_direct:
         """
 
         headers = {"Authorization": f"Bearer {self._token}"}
@@ -118,7 +122,7 @@ class FlightSearch:
             "departureDate": from_time.strftime("%Y-%m-%d"),
             "returnDate": to_time.strftime("%Y-%m-%d"),
             "adults": 1,
-            "nonStop": "true",
+            "nonStop": "true" if is_direct else "false",
             "currencyCode": "GBP",
             "max": "10",
         }
